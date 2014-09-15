@@ -13,6 +13,19 @@
     <link rel="stylesheet" href="assets/embedded.css">
   </head>
   <body>
+
+    <div id="app1"></div>
+    <div id="app2"></div>
+
+    <script>
+      // store original window state
+      var windowPollution = [];
+      (function () {
+        for (var name in window) {
+          windowPollution.push(name);
+        }
+      }());
+    </script>
     <script>
       window.EmbeddedENV = {{ENV}};
       window.EmberENV = window.EmbeddedENV.EmberENV;
@@ -20,7 +33,25 @@
     <script src="assets/vendor.js"></script>
     <script src="assets/embedded.js"></script>
     <script>
-      window.Embedded = require('embedded/app')['default'].create(EmbeddedENV.APP);
+      (function () {
+        var app1 = require('embedded/app')['default'].create($.extend({}, EmbeddedENV.APP, {rootElement: "#app1"}));
+        var app2 = require('embedded/app')['default'].create($.extend({}, EmbeddedENV.APP, {rootElement: "#app2"}));
+
+        console.log(app1, app2);
+      }());
+    </script>
+    <script>
+      // compare original window to a current window
+      (function () {
+        var newPollution = {};
+        for (var name in window) {
+          if (windowPollution.indexOf(name) === -1) {
+            newPollution[name] = window[name];
+          }
+        }
+        console.log("Window pollution", newPollution);
+      }());
+
     </script>
   </body>
 </html>
